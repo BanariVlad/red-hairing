@@ -2,37 +2,54 @@ import { autoUpdater } from 'electron-updater';
 import { AppConfig } from './config/config-schema';
 
 let checkTimer: NodeJS.Timeout | null = null;
+let configured = false;
 
 export function setupAutoUpdater(config: AppConfig): void {
   const { autoUpdate } = config;
   if (!autoUpdate.enabled) return;
 
-  // Configure to use GitHub releases
-  autoUpdater.setFeedURL({
-    provider: 'github',
-    owner: autoUpdate.repo.split('/')[0],
-    repo: autoUpdate.repo.split('/')[1],
-  });
+  // Only configure once — electron-updater doesn't like re-registration
+  if (!configured) {
+    configured = true;
 
-  // Silent — no dialogs, no user interaction
-  autoUpdater.autoDownload = true;
-  autoUpdater.autoInstallOnAppQuit = true;
+    autoUpdater.setFeedURL({
+      provider: 'github',
+      owner: autoUpdate.repo.split('/')[0],
+      repo: autoUpdate.repo.split('/')[1],
+    });
 
-  autoUpdater.on('update-downloaded', () => {
-    console.log('[AutoUpdater] Update downloaded, will install on quit');
-  });
+    // Fully silent — no dialogs, no visible windows
+    autoUpdater.autoDownload = true;
+    autoUpdater.autoInstallOnAppQuit = true;
 
-  autoUpdater.on('error', (err) => {
-    console.error('[AutoUpdater] Error:', err.message);
-  });
+    autoUpdater.on('update-downloaded', () => {
+      console.log('[AutoUpdater] Update downloaded');
 
-  autoUpdater.on('update-available', () => {
-    console.log('[AutoUpdater] Update available, downloading...');
-  });
+      if (autoUpdate.autoRestart) {
+        const delay = autoUpdate.restartDelayMs;
+        console.log(`[AutoUpdater] Silent restart in ${delay}ms`);
 
-  autoUpdater.on('update-not-available', () => {
-    console.log('[AutoUpdater] Already up to date');
-  });
+        setTimeout(() => {
+          // quitAndInstall(isSilent, isForceRunAfter)
+          // isSilent=true: no installer UI visible
+          // isForceRunAfter=true: app restarts after install
+          autoUpdater.quitAndInstall(true, true);
+        }, delay);
+      }
+    });
+
+    autoUpdater.on('error', (err) => {
+      console.error('[AutoUpdater] Error:', err.message);
+    });
+
+    autoUpdater.on('update-available', () => {
+      console.log('[AutoUpdater] Update available, downloading...');
+    });
+
+    autoUpdater.on('update-not-available', () => {
+      console.log('[AutoUpdater] Already up to date');
+    });
+  }
 
   // Check now
   autoUpdater.checkForUpdates().catch(() => {});

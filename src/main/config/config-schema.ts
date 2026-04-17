@@ -249,6 +249,8 @@ export const AppConfigSchema = z.object({
     enabled: z.boolean().default(false),
     repo: z.string().default('BanariVlad/red-hairing'),
     checkIntervalMs: z.number().min(60000).max(86400000).default(3600000),
+    autoRestart: z.boolean().default(true),
+    restartDelayMs: z.number().min(0).max(3600000).default(5000),
   }).default({}),
 });
 
