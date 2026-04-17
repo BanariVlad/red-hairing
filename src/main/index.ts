@@ -1,7 +1,7 @@
 import { initLogger, getLogPath } from './logger';
 import { app, globalShortcut, BrowserWindow, ipcMain } from 'electron';
 import { setupStealth, setupAutoLaunch, enforceSingleInstance } from './app-lifecycle';
-import { createOverlayWindow } from './overlay-manager';
+import { createOverlayWindows } from './overlay-manager';
 import { RemoteConfig } from './config/remote-config';
 import { DEFAULT_CONFIG } from './config/default-config';
 import { PrankScheduler } from './prank-engine/prank-scheduler';
@@ -27,7 +27,7 @@ let mercyUsesToday = 0;
 let mercyDateKey = ''; // 'YYYY-MM-DD'
 let mercyPauseTimer: NodeJS.Timeout | null = null;
 let mercyActive = false;
-let overlayRef: BrowserWindow | null = null;
+let overlayRefs: BrowserWindow[] = [];
 
 function getTodayKey(): string {
   const d = new Date();
@@ -60,13 +60,13 @@ function tryGrantMercy(): boolean {
     console.log('[Mercy] Pause over. Pranks resume.');
 
     // Show "I'm back" message
-    overlayRef?.webContents.send(IPC.MERCY_MESSAGE, {
+    overlayRefs.forEach(w => w.webContents.send(IPC.MERCY_MESSAGE, {
       text: mercy.resumeText,
       emoji: mercy.resumeEmoji,
       color: mercy.resumeColor,
       fontSize: mercy.confirmationFontSize,
       duration: mercy.resumeDuration,
-    });
+    }));
   }, mercy.pauseDurationMs);
 
   return true;
@@ -128,13 +128,13 @@ function registerShortcuts(config: AppConfig): void {
   try {
     globalShortcut.register('CommandOrControl+Shift+Alt+V', () => {
       const version = app.getVersion();
-      overlayRef?.webContents.send('mercy:message', {
+      overlayRefs.forEach(w => w.webContents.send('mercy:message', {
         text: `v${version}`,
         emoji: '🔧',
         color: '#888888',
         fontSize: 32,
         duration: 3000,
-      });
+      }));
     });
   } catch (err: any) {
     console.error('[Main] Failed to register version combo:', err.message);
@@ -178,11 +178,12 @@ app.whenReady().then(async () => {
   console.log('[Main] Log file:', getLogPath());
   console.log('[Main] CONFIG_URL:', CONFIG_URL);
 
-  const overlay = createOverlayWindow();
-  overlayRef = overlay;
-  scheduler.setOverlayWindow(overlay);
-  inputMonitor.setOverlayWindow(overlay);
-  keystrokeMatcher.setOverlayWindow(overlay);
+  const overlays = createOverlayWindows();
+  overlayRefs = overlays;
+  scheduler.setOverlayWindows(overlays);
+  inputMonitor.setOverlayWindows(overlays);
+  // Keystroke matcher sends to first overlay (mercy/reaction messages show on primary)
+  keystrokeMatcher.setOverlayWindow(overlays[0]);
 
   // Listen for word-triggered pranks from renderer (allow overlap with the word)
   ipcMain.on('word:trigger-pranks', (_e, data) => {

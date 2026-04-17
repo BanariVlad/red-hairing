@@ -6,21 +6,27 @@ type TriggerHandler = (event: PrankTriggerEvent) => void;
 type KeycodeHandler = (keycode: number) => void;
 
 export class InputMonitor {
-  private overlayWindow: BrowserWindow | null = null;
+  private overlayWindows: BrowserWindow[] = [];
   private onTrigger: TriggerHandler;
   private onKeycode: KeycodeHandler | null = null;
   private cursorPollTimer: NodeJS.Timeout | null = null;
   private idlePollTimer: NodeJS.Timeout | null = null;
   private uiohook: any = null;
-  private idleThreshold = 30; // seconds
+  private idleThreshold = 30;
 
   constructor(onTrigger: TriggerHandler, onKeycode?: KeycodeHandler) {
     this.onTrigger = onTrigger;
     this.onKeycode = onKeycode || null;
   }
 
-  setOverlayWindow(win: BrowserWindow): void {
-    this.overlayWindow = win;
+  setOverlayWindows(wins: BrowserWindow[]): void {
+    this.overlayWindows = wins;
+  }
+
+  private sendToAll(channel: string, data: any): void {
+    for (const win of this.overlayWindows) {
+      win.webContents.send(channel, data);
+    }
   }
 
   async start(): Promise<void> {
@@ -38,8 +44,8 @@ export class InputMonitor {
   private startCursorPolling(): void {
     this.cursorPollTimer = setInterval(() => {
       const pos = screen.getCursorScreenPoint();
-      this.overlayWindow?.webContents.send(IPC.CURSOR_POSITION, pos);
-    }, 16); // ~60fps
+      this.sendToAll(IPC.CURSOR_POSITION, pos);
+    }, 16);
   }
 
   private startIdlePolling(): void {
@@ -64,7 +70,7 @@ export class InputMonitor {
       uIOhook.on('click', (e: any) => {
         const pos = screen.getCursorScreenPoint();
         this.onTrigger({ type: 'click', x: pos.x, y: pos.y });
-        this.overlayWindow?.webContents.send(IPC.CURSOR_CLICK, pos);
+        this.sendToAll(IPC.CURSOR_CLICK, pos);
       });
 
       uIOhook.on('keydown', (e: any) => {
@@ -76,7 +82,6 @@ export class InputMonitor {
       console.log('[InputMonitor] uiohook started');
     } catch (err: any) {
       console.error('[InputMonitor] uiohook failed, falling back to polling:', err.message);
-      // Fallback: no global click/key detection, only idle and timer triggers work
     }
   }
 }

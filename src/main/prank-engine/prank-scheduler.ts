@@ -16,7 +16,7 @@ const INPUT_BLOCKING_PRANKS: PrankId[] = ['unclosable', 'fakeBsod'];
 export class PrankScheduler {
   private config: AppConfig | null = null;
   private states: Map<PrankId, PrankState> = new Map();
-  private overlayWindow: BrowserWindow | null = null;
+  private overlayWindows: BrowserWindow[] = [];
   private randomTimers: Map<PrankId, NodeJS.Timeout> = new Map();
   private intervalTimers: Map<PrankId, NodeJS.Timeout> = new Map();
   private paused: boolean = false;
@@ -33,8 +33,14 @@ export class PrankScheduler {
     }
   }
 
-  setOverlayWindow(win: BrowserWindow): void {
-    this.overlayWindow = win;
+  setOverlayWindows(wins: BrowserWindow[]): void {
+    this.overlayWindows = wins;
+  }
+
+  private sendToAll(channel: string, data: any): void {
+    for (const win of this.overlayWindows) {
+      win.webContents.send(channel, data);
+    }
   }
 
   updateConfig(config: AppConfig): void {
@@ -163,7 +169,7 @@ export class PrankScheduler {
 
     // Toggle input blocking
     if (INPUT_BLOCKING_PRANKS.includes(id)) {
-      this.overlayWindow?.setIgnoreMouseEvents(false);
+      for (const w of this.overlayWindows) w.setIgnoreMouseEvents(false);
     }
 
     // Send start command
@@ -174,7 +180,7 @@ export class PrankScheduler {
       screenCapture,
     };
 
-    this.overlayWindow?.webContents.send(IPC.PRANK_START, command);
+    this.sendToAll(IPC.PRANK_START, command);
 
     // Schedule auto-stop
     state.stopTimer = setTimeout(() => {
@@ -206,10 +212,10 @@ export class PrankScheduler {
 
     // Restore click-through
     if (INPUT_BLOCKING_PRANKS.includes(id)) {
-      this.overlayWindow?.setIgnoreMouseEvents(true, { forward: true });
+      for (const w of this.overlayWindows) w.setIgnoreMouseEvents(true, { forward: true });
     }
 
-    this.overlayWindow?.webContents.send(IPC.PRANK_STOP, { prank: id, action: 'stop' });
+    this.sendToAll(IPC.PRANK_STOP, { prank: id, action: 'stop' });
   }
 
   private setupTimerTriggers(): void {
