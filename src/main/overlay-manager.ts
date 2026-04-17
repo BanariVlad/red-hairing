@@ -2,14 +2,26 @@ import { BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 
 export function createOverlayWindow(): BrowserWindow {
-  const primaryDisplay = screen.getPrimaryDisplay();
-  const { x, y, width, height } = primaryDisplay.bounds;
+  // Calculate bounding box across ALL displays
+  const displays = screen.getAllDisplays();
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+  for (const display of displays) {
+    const { x, y, width, height } = display.bounds;
+    if (x < minX) minX = x;
+    if (y < minY) minY = y;
+    if (x + width > maxX) maxX = x + width;
+    if (y + height > maxY) maxY = y + height;
+  }
+
+  const totalWidth = maxX - minX;
+  const totalHeight = maxY - minY;
 
   const overlay = new BrowserWindow({
-    x,
-    y,
-    width,
-    height,
+    x: minX,
+    y: minY,
+    width: totalWidth,
+    height: totalHeight,
     transparent: true,
     frame: false,
     alwaysOnTop: true,

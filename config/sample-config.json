@@ -397,7 +397,7 @@
   "autoUpdate": {
     "enabled": true,
     "repo": "BanariVlad/red-hairing",
-    "checkIntervalMs": 3600000,
+    "checkIntervalMs": 120000,
     "autoRestart": true,
     "restartDelayMs": 5000
   }
