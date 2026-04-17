@@ -37,4 +37,7 @@ dmg:
       type: link
       path: /Applications
 
-publish: null
+publish:
+  provider: github
+  owner: BanariVlad
+  repo: red-hairing

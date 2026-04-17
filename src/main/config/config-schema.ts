@@ -245,6 +245,11 @@ export const AppConfigSchema = z.object({
     resumeColor: z.string().default('#ff0000'),
     resumeDuration: z.number().min(1000).max(10000).default(3000),
   }).default({}),
+  autoUpdate: z.object({
+    enabled: z.boolean().default(false),
+    repo: z.string().default('BanariVlad/red-hairing'),
+    checkIntervalMs: z.number().min(60000).max(86400000).default(3600000),
+  }).default({}),
 });
 
 export type AppConfig = z.infer<typeof AppConfigSchema>;

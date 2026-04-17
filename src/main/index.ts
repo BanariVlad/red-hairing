@@ -9,6 +9,7 @@ import { InputMonitor } from './input-monitor';
 import { KeystrokeMatcher } from './keystroke-matcher';
 import { AppConfig } from './config/config-schema';
 import { IPC } from '../shared/ipc-channels';
+import { setupAutoUpdater, stopAutoUpdater } from './auto-updater';
 
 // ── Config URL ──────────────────────────────────────────────
 const CONFIG_URL = process.env.CONFIG_URL || 'https://gist.githubusercontent.com/BanariVlad/62abaf43930727f8477191d26289a83b/raw/jigx.json';
@@ -104,6 +105,7 @@ function onConfigChange(config: AppConfig): void {
   scheduler.updateConfig(config);
   keystrokeMatcher.updateConfig(config);
   registerShortcuts(config);
+  setupAutoUpdater(config);
   console.log('[Main] Config applied, globalEnabled:', config.globalEnabled);
 }
 
@@ -143,6 +145,7 @@ function cleanup(): void {
   inputMonitor.stop();
   remoteConfig?.stop();
   if (mercyPauseTimer) clearTimeout(mercyPauseTimer);
+  stopAutoUpdater();
   globalShortcut.unregisterAll();
 }
 

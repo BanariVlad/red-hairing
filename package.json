@@ -20,6 +20,7 @@
   "dependencies": {
     "auto-launch": "^5.0.6",
     "electron-store": "^10.0.0",
+    "electron-updater": "^6.8.3",
     "howler": "^2.2.4",
     "uiohook-napi": "^1.5.4",
     "zod": "^3.23.0"
