@@ -1,9 +1,12 @@
 {
   "version": 1,
-  "pollIntervalMs": 30000,
+  "pollIntervalMs": 180000,
   "globalEnabled": true,
   "globalSchedule": { "startHour": 9, "endHour": 22 },
   "killCombo": "CommandOrControl+Shift+Alt+Q",
+  "dismissable": true,
+  "dismissCombo": "Shift+Escape",
+  "dismissDelay": 2000,
   "pranks": {
     "cursorText": {
       "enabled": true,
@@ -23,6 +26,7 @@
       "defaultFallRotation": true,
       "defaultFollowOffsetX": 20,
       "defaultFollowOffsetY": -30,
+      "defaultTextShadow": "2px 2px 4px rgba(0,0,0,0.5)",
       "words": [
         {
           "text": "LOL",
@@ -111,7 +115,7 @@
       "particleCount": 30,
       "particleSize": 8,
       "fadeSpeed": 0.05,
-      "trailType": "sparkles"
+      "trailType": "circles"
     },
     "screenTilt": {
       "enabled": true,
@@ -142,7 +146,9 @@
       "cooldown": 30000,
       "intensity": 6,
       "magnitude": 10,
-      "frequency": 30
+      "frequency": 30,
+      "chainPranks": [],
+      "chainDelay": 0
     },
     "colorInversion": {
       "enabled": true,
@@ -220,6 +226,8 @@
         "caseSensitive": false,
         "chance": 1,
         "cooldown": 5000,
+        "triggerPranks": [],
+        "triggerDelay": 0,
         "response": {
           "type": "emoji",
           "content": "👋",
@@ -234,6 +242,8 @@
         "caseSensitive": false,
         "chance": 1,
         "cooldown": 10000,
+        "triggerPranks": [],
+        "triggerDelay": 0,
         "response": {
           "type": "text",
           "content": "No one can help you now",
@@ -251,6 +261,8 @@
         "caseSensitive": false,
         "chance": 1,
         "cooldown": 15000,
+        "triggerPranks": [],
+        "triggerDelay": 0,
         "response": {
           "type": "text",
           "content": "👀 I can see that",
@@ -266,6 +278,8 @@
         "caseSensitive": false,
         "chance": 0.8,
         "cooldown": 30000,
+        "triggerPranks": [],
+        "triggerDelay": 0,
         "response": {
           "type": "text",
           "content": "🔍 I'm watching your searches",
@@ -281,6 +295,8 @@
         "caseSensitive": false,
         "chance": 0.5,
         "cooldown": 10000,
+        "triggerPranks": [],
+        "triggerDelay": 0,
         "response": {
           "type": "emoji",
           "content": "😂",
@@ -295,6 +311,8 @@
         "caseSensitive": false,
         "chance": 1,
         "cooldown": 8000,
+        "triggerPranks": [],
+        "triggerDelay": 0,
         "response": {
           "type": "emoji",
           "content": "💩",
@@ -309,6 +327,8 @@
         "caseSensitive": false,
         "chance": 0.7,
         "cooldown": 15000,
+        "triggerPranks": [],
+        "triggerDelay": 0,
         "response": {
           "type": "emoji",
           "content": "🪲🪲🪲🪲🪲",
@@ -323,6 +343,8 @@
         "caseSensitive": false,
         "chance": 1,
         "cooldown": 20000,
+        "triggerPranks": [],
+        "triggerDelay": 0,
         "response": {
           "type": "text",
           "content": "ACCESS DENIED",
@@ -401,5 +423,12 @@
     "resumeEmoji": "👹",
     "resumeColor": "#ff0000",
     "resumeDuration": 3000
+  },
+  "autoUpdate": {
+    "enabled": true,
+    "repo": "BanariVlad/red-hairing",
+    "checkIntervalMs": 3600000,
+    "autoRestart": true,
+    "restartDelayMs": 5000
   }
 }
