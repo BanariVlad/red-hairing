@@ -1,0 +1,25 @@
+name: Build Windows
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run build
+      - run: npx electron-builder --win --x64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-portable
+          path: release/win-unpacked/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: release/*.exe

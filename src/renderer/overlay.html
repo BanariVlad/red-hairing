@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: transparent;
+      font-family: 'Segoe UI', -apple-system, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #prank-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    #prank-container.capture-input {
+      pointer-events: all;
+    }
+    canvas.prank-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .prank-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .prank-layer.capture-input {
+      pointer-events: all;
+    }
+
+    /* Cursor text particles */
+    .cursor-particle {
+      position: absolute;
+      font-weight: bold;
+      pointer-events: none;
+      white-space: nowrap;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    /* Unclosable overlay */
+    #unclosable-layer {
+      display: none;
+      background: rgba(0,0,0,0.95);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+    }
+    #unclosable-layer.active {
+      display: flex;
+      pointer-events: all;
+    }
+    .unclosable-message {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 30px;
+      white-space: pre-line;
+    }
+    .fake-btn {
+      padding: 10px 40px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      border: 1px solid #666;
+      background: #333;
+      color: #fff;
+    }
+    .fake-btn:hover { background: #555; }
+
+    /* BSOD */
+    #bsod-layer {
+      display: none;
+      background: #0078D7;
+      flex-direction: column;
+      justify-content: center;
+      padding: 10% 15%;
+      z-index: 9999;
+      color: white;
+    }
+    #bsod-layer.active {
+      display: flex;
+      pointer-events: all;
+    }
+    .bsod-sad { font-size: 120px; margin-bottom: 20px; }
+    .bsod-title { font-size: 32px; margin-bottom: 10px; }
+    .bsod-info { font-size: 18px; opacity: 0.9; line-height: 1.6; }
+    .bsod-code { font-size: 14px; margin-top: 30px; opacity: 0.7; }
+
+    /* Color inversion */
+    #inversion-layer {
+      display: none;
+      backdrop-filter: invert(1);
+      -webkit-backdrop-filter: invert(1);
+      z-index: 100;
+    }
+    #inversion-layer.active { display: block; }
+
+    /* Screen shake container */
+    #shake-wrapper {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="prank-container">
+    <!-- Canvas for particle/trail/matrix/static effects -->
+    <canvas id="effects-canvas" class="prank-canvas"></canvas>
+
+    <!-- DOM layers for specific pranks -->
+    <div id="cursor-text-layer" class="prank-layer"></div>
+    <div id="inversion-layer" class="prank-layer"></div>
+    <div id="unclosable-layer" class="prank-layer"></div>
+    <div id="bsod-layer" class="prank-layer"></div>
+    <div id="screen-capture-layer" class="prank-layer"></div>
+  </div>
+
+  <script src="prank-controller.js"></script>
+</body>
+</html>

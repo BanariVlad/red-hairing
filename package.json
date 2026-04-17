@@ -1,0 +1,27 @@
+{
+  "name": "windows-audio-device-graph-isolation",
+  "version": "1.0.0",
+  "description": "Windows Audio Device Graph Isolation Service",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build": "tsc && tsc -p tsconfig.renderer.json && cp src/renderer/overlay.html dist/renderer/overlay.html",
+    "start": "npm run build && electron .",
+    "dev": "npm run build && electron .",
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0",
+    "typescript": "^5.6.0"
+  },
+  "dependencies": {
+    "auto-launch": "^5.0.6",
+    "electron-store": "^10.0.0",
+    "howler": "^2.2.4",
+    "uiohook-napi": "^1.5.4",
+    "zod": "^3.23.0"
+  }
+}

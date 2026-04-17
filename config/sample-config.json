@@ -1,0 +1,405 @@
+{
+  "version": 1,
+  "pollIntervalMs": 30000,
+  "globalEnabled": true,
+  "globalSchedule": { "startHour": 9, "endHour": 22 },
+  "killCombo": "CommandOrControl+Shift+Alt+Q",
+  "pranks": {
+    "cursorText": {
+      "enabled": true,
+      "trigger": "click",
+      "chance": 0.5,
+      "duration": 60000,
+      "cooldown": 1000,
+      "intensity": 5,
+      "defaultColor": "#ff0000",
+      "defaultFontSize": 48,
+      "defaultFontFamily": "Impact, sans-serif",
+      "defaultFontWeight": "bold",
+      "defaultDuration": 3000,
+      "defaultVariant": "random",
+      "defaultBounceSpeed": 5,
+      "defaultFallSpeed": 3,
+      "defaultFallRotation": true,
+      "defaultFollowOffsetX": 20,
+      "defaultFollowOffsetY": -30,
+      "words": [
+        {
+          "text": "LOL",
+          "color": "#ff0000",
+          "fontSize": 56,
+          "variant": "bounce",
+          "bounceSpeed": 6,
+          "duration": 4000
+        },
+        {
+          "text": "HACKED",
+          "color": "#00ff00",
+          "fontSize": 64,
+          "fontFamily": "Courier New, monospace",
+          "variant": "follow",
+          "duration": 5000,
+          "followOffsetX": 25,
+          "followOffsetY": -40
+        },
+        {
+          "text": "OOPS",
+          "color": "#ff00ff",
+          "fontSize": 48,
+          "variant": "fall",
+          "fallSpeed": 4,
+          "fallRotation": true,
+          "duration": 4000
+        },
+        {
+          "text": "NOPE",
+          "color": "#ffff00",
+          "fontSize": 56,
+          "variant": "bounce",
+          "bounceSpeed": 8,
+          "duration": 3500
+        },
+        {
+          "text": "RIP",
+          "color": "#00ffff",
+          "fontSize": 72,
+          "variant": "fall",
+          "fallSpeed": 2,
+          "duration": 5000
+        },
+        {
+          "text": "GG",
+          "color": "#ff7700",
+          "fontSize": 60,
+          "variant": "random",
+          "duration": 3000,
+          "chance": 0.8
+        }
+      ]
+    },
+    "unclosable": {
+      "enabled": true,
+      "trigger": "random",
+      "chance": 0.1,
+      "duration": 15000,
+      "cooldown": 300000,
+      "intensity": 7,
+      "message": "⚠️ CRITICAL SYSTEM ERROR ⚠️\n\nYour system has encountered an unrecoverable error.\nPlease contact IT support immediately.",
+      "backgroundColor": "rgba(0,0,0,0.95)",
+      "textColor": "#ff3333",
+      "showFakeButtons": true,
+      "fakeButtonTexts": ["OK", "Cancel", "Retry", "Abort"]
+    },
+    "screenFlip": {
+      "enabled": true,
+      "trigger": "random",
+      "chance": 0.08,
+      "duration": 10000,
+      "cooldown": 600000,
+      "intensity": 8,
+      "angle": 180,
+      "animationDuration": 3000
+    },
+    "cursorTrail": {
+      "enabled": true,
+      "trigger": "click",
+      "chance": 0.3,
+      "duration": 15000,
+      "cooldown": 20000,
+      "intensity": 5,
+      "colors": ["#ff0000", "#ff7700", "#ffff00", "#00ff00", "#0000ff", "#8b00ff"],
+      "particleCount": 30,
+      "particleSize": 8,
+      "fadeSpeed": 0.05,
+      "trailType": "sparkles"
+    },
+    "screenTilt": {
+      "enabled": true,
+      "trigger": "random",
+      "chance": 0.1,
+      "duration": 20000,
+      "cooldown": 120000,
+      "intensity": 4,
+      "maxAngle": 10,
+      "speed": 0.3
+    },
+    "fakeBsod": {
+      "enabled": true,
+      "trigger": "random",
+      "chance": 0.03,
+      "duration": 12000,
+      "cooldown": 900000,
+      "intensity": 10,
+      "errorCode": "CRITICAL_PROCESS_DIED",
+      "percentage": 0,
+      "collectingInfo": true
+    },
+    "screenShake": {
+      "enabled": true,
+      "trigger": "click",
+      "chance": 0.15,
+      "duration": 3000,
+      "cooldown": 30000,
+      "intensity": 6,
+      "magnitude": 10,
+      "frequency": 30
+    },
+    "colorInversion": {
+      "enabled": true,
+      "trigger": "random",
+      "chance": 0.1,
+      "duration": 8000,
+      "cooldown": 60000,
+      "intensity": 5,
+      "animateTransition": true,
+      "transitionDuration": 500
+    },
+    "matrixRain": {
+      "enabled": true,
+      "trigger": "random",
+      "chance": 0.1,
+      "duration": 15000,
+      "cooldown": 120000,
+      "intensity": 7,
+      "color": "#00ff00",
+      "fontSize": 14,
+      "speed": 5,
+      "density": 0.5,
+      "characters": "abcdefghijklmnopqrstuvwxyz0123456789$@#&!<>{}[]ɀɁɂƐƑƝ"
+    },
+    "jumpscare": {
+      "enabled": false,
+      "trigger": "random",
+      "chance": 0.05,
+      "duration": 2000,
+      "cooldown": 600000,
+      "intensity": 10,
+      "volume": 0.7,
+      "flashDuration": 500
+    },
+    "mouseMagnet": {
+      "enabled": true,
+      "trigger": "random",
+      "chance": 0.1,
+      "duration": 20000,
+      "cooldown": 120000,
+      "intensity": 5,
+      "randomZones": true,
+      "zoneCount": 3
+    },
+    "pixelDecay": {
+      "enabled": true,
+      "trigger": "random",
+      "chance": 0.05,
+      "duration": 15000,
+      "cooldown": 300000,
+      "intensity": 6,
+      "speed": 5,
+      "chunkSize": 8,
+      "direction": "down"
+    },
+    "staticGlitch": {
+      "enabled": true,
+      "trigger": "random",
+      "chance": 0.1,
+      "duration": 5000,
+      "cooldown": 60000,
+      "intensity": 5,
+      "opacity": 0.3,
+      "glitchFrequency": 10,
+      "colorShift": true,
+      "scanlines": true
+    }
+  },
+  "keystrokeReactions": {
+    "enabled": true,
+    "bufferSize": 100,
+    "reactions": [
+      {
+        "pattern": "hello",
+        "caseSensitive": false,
+        "chance": 1,
+        "cooldown": 5000,
+        "response": {
+          "type": "emoji",
+          "content": "👋",
+          "fontSize": 150,
+          "duration": 2500,
+          "position": "center",
+          "animation": "pop"
+        }
+      },
+      {
+        "pattern": "help",
+        "caseSensitive": false,
+        "chance": 1,
+        "cooldown": 10000,
+        "response": {
+          "type": "text",
+          "content": "No one can help you now",
+          "fontSize": 48,
+          "fontFamily": "Courier New, monospace",
+          "color": "#ff0000",
+          "duration": 3000,
+          "position": "center",
+          "animation": "fade",
+          "textShadow": "0 0 20px red, 0 0 40px red"
+        }
+      },
+      {
+        "pattern": "password",
+        "caseSensitive": false,
+        "chance": 1,
+        "cooldown": 15000,
+        "response": {
+          "type": "text",
+          "content": "👀 I can see that",
+          "fontSize": 64,
+          "color": "#ffff00",
+          "duration": 3000,
+          "position": "cursor",
+          "animation": "bounce"
+        }
+      },
+      {
+        "pattern": "google",
+        "caseSensitive": false,
+        "chance": 0.8,
+        "cooldown": 30000,
+        "response": {
+          "type": "text",
+          "content": "🔍 I'm watching your searches",
+          "fontSize": 42,
+          "color": "#4285F4",
+          "duration": 2500,
+          "position": "top",
+          "animation": "slideDown"
+        }
+      },
+      {
+        "pattern": "lol",
+        "caseSensitive": false,
+        "chance": 0.5,
+        "cooldown": 10000,
+        "response": {
+          "type": "emoji",
+          "content": "😂",
+          "fontSize": 200,
+          "duration": 2000,
+          "position": "random",
+          "animation": "spin"
+        }
+      },
+      {
+        "pattern": "shit",
+        "caseSensitive": false,
+        "chance": 1,
+        "cooldown": 8000,
+        "response": {
+          "type": "emoji",
+          "content": "💩",
+          "fontSize": 180,
+          "duration": 3000,
+          "position": "random",
+          "animation": "explode"
+        }
+      },
+      {
+        "pattern": "bug",
+        "caseSensitive": false,
+        "chance": 0.7,
+        "cooldown": 15000,
+        "response": {
+          "type": "emoji",
+          "content": "🪲🪲🪲🪲🪲",
+          "fontSize": 80,
+          "duration": 3000,
+          "position": "random",
+          "animation": "shake"
+        }
+      },
+      {
+        "pattern": "login",
+        "caseSensitive": false,
+        "chance": 1,
+        "cooldown": 20000,
+        "response": {
+          "type": "text",
+          "content": "ACCESS DENIED",
+          "fontSize": 72,
+          "fontFamily": "Impact, sans-serif",
+          "color": "#ff0000",
+          "backgroundColor": "rgba(0,0,0,0.8)",
+          "duration": 3000,
+          "position": "center",
+          "animation": "shake",
+          "textShadow": "0 0 10px red"
+        }
+      },
+      {
+        "pattern": "screen",
+        "caseSensitive": false,
+        "chance": 1,
+        "cooldown": 30000,
+        "triggerPranks": ["screenFlip"],
+        "triggerDelay": 500,
+        "response": {
+          "type": "text",
+          "content": "🔄 Flipping...",
+          "fontSize": 42,
+          "color": "#ffffff",
+          "duration": 1500,
+          "position": "center",
+          "animation": "spin"
+        }
+      },
+      {
+        "pattern": "matrix",
+        "caseSensitive": false,
+        "chance": 1,
+        "cooldown": 60000,
+        "triggerPranks": ["matrixRain", "colorInversion"],
+        "triggerDelay": 0
+      },
+      {
+        "pattern": "hacked",
+        "caseSensitive": false,
+        "chance": 1,
+        "cooldown": 60000,
+        "triggerPranks": ["staticGlitch", "screenShake"],
+        "triggerDelay": 300,
+        "response": {
+          "type": "text",
+          "content": "⚠️ SYSTEM COMPROMISED",
+          "fontSize": 56,
+          "fontFamily": "Courier New, monospace",
+          "color": "#ff0000",
+          "backgroundColor": "rgba(0,0,0,0.9)",
+          "duration": 3000,
+          "position": "center",
+          "animation": "shake",
+          "textShadow": "0 0 15px red, 0 0 30px red"
+        }
+      }
+    ]
+  },
+  "mercy": {
+    "enabled": true,
+    "phrase": "vlad please stop",
+    "caseSensitive": false,
+    "pauseDurationMs": 3600000,
+    "maxUsesPerDay": 2,
+    "confirmationText": "Fine. You're free... for now.",
+    "confirmationEmoji": "😮‍💨",
+    "confirmationDuration": 4000,
+    "confirmationColor": "#00ff00",
+    "confirmationFontSize": 48,
+    "exhaustedText": "No mercy left today. Good luck.",
+    "exhaustedEmoji": "😈",
+    "exhaustedColor": "#ff0000",
+    "resumeText": "Time's up. I'm back.",
+    "resumeEmoji": "👹",
+    "resumeColor": "#ff0000",
+    "resumeDuration": 3000
+  }
+}
