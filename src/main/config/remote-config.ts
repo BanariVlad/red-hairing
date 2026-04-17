@@ -1,7 +1,7 @@
 import { app, net } from 'electron';
 import * as fs from 'fs';
 import * as path from 'path';
-import { AppConfig, AppConfigSchema } from './config-schema';
+import { AppConfig, parseConfig } from './config-schema';
 import { DEFAULT_CONFIG } from './default-config';
 
 const CACHE_FILE = 'config-cache.json';
@@ -89,7 +89,7 @@ export class RemoteConfig {
       console.log('[RemoteConfig] Fetch OK, body length:', body.length);
 
       const raw = JSON.parse(body);
-      const parsed = AppConfigSchema.parse(raw);
+      const parsed = parseConfig(raw);
 
       console.log('[RemoteConfig] Parsed OK, globalEnabled:', parsed.globalEnabled,
         'pranks enabled:', Object.entries(parsed.pranks).filter(([,v]: any) => v.enabled).map(([k]) => k).join(','));
@@ -131,7 +131,7 @@ export class RemoteConfig {
   private loadCache(): AppConfig | null {
     try {
       const data = fs.readFileSync(this.getCachePath(), 'utf-8');
-      return AppConfigSchema.parse(JSON.parse(data));
+      return parseConfig(JSON.parse(data));
     } catch {
       return null;
     }
