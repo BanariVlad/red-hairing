@@ -19,4 +19,7 @@ contextBridge.exposeInMainWorld('prankAPI', {
   onMercyMessage: (callback: (data: any) => void) => {
     ipcRenderer.on('mercy:message', (_e, data) => callback(data));
   },
+  triggerPranks: (prankIds: string[], delay: number) => {
+    ipcRenderer.send('word:trigger-pranks', { prankIds, delay });
+  },
 });

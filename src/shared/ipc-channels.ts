@@ -10,4 +10,5 @@ export const IPC = {
   SCREEN_CAPTURED: 'overlay:screen-captured',
   KEYSTROKE_REACTION: 'keystroke:reaction',
   MERCY_MESSAGE: 'mercy:message',
+  WORD_TRIGGER_PRANKS: 'word:trigger-pranks',
 } as const;

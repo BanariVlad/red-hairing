@@ -11,15 +11,15 @@
     "cursorText": {
       "enabled": true,
       "trigger": "click",
-      "chance": 0.5,
+      "chance": 0.01,
       "duration": 60000,
       "cooldown": 1000,
       "intensity": 5,
-      "defaultColor": "#ff0000",
-      "defaultFontSize": 48,
-      "defaultFontFamily": "Impact, sans-serif",
+      "defaultColor": "#ffffff",
+      "defaultFontSize": 42,
+      "defaultFontFamily": "Segoe UI, sans-serif",
       "defaultFontWeight": "bold",
-      "defaultDuration": 3000,
+      "defaultDuration": 3500,
       "defaultVariant": "random",
       "defaultBounceSpeed": 5,
       "defaultFallSpeed": 3,
@@ -28,57 +28,27 @@
       "defaultFollowOffsetY": -30,
       "defaultTextShadow": "2px 2px 4px rgba(0,0,0,0.5)",
       "words": [
-        {
-          "text": "LOL",
-          "color": "#ff0000",
-          "fontSize": 56,
-          "variant": "bounce",
-          "bounceSpeed": 6,
-          "duration": 4000
-        },
-        {
-          "text": "HACKED",
-          "color": "#00ff00",
-          "fontSize": 64,
-          "fontFamily": "Courier New, monospace",
-          "variant": "follow",
-          "duration": 5000,
-          "followOffsetX": 25,
-          "followOffsetY": -40
-        },
-        {
-          "text": "OOPS",
-          "color": "#ff00ff",
-          "fontSize": 48,
-          "variant": "fall",
-          "fallSpeed": 4,
-          "fallRotation": true,
-          "duration": 4000
-        },
-        {
-          "text": "NOPE",
-          "color": "#ffff00",
-          "fontSize": 56,
-          "variant": "bounce",
-          "bounceSpeed": 8,
-          "duration": 3500
-        },
-        {
-          "text": "RIP",
-          "color": "#00ffff",
-          "fontSize": 72,
-          "variant": "fall",
-          "fallSpeed": 2,
-          "duration": 5000
-        },
-        {
-          "text": "GG",
-          "color": "#ff7700",
-          "fontSize": 60,
-          "variant": "random",
-          "duration": 3000,
-          "chance": 0.8
-        }
+        { "text": "lol wut", "variant": "bounce", "duration": 3000 },
+        { "text": "Stop clicking!", "color": "#ff4444", "variant": "follow", "duration": 4000 },
+        { "text": "Shorty", "variant": "fall", "duration": 3000 },
+        { "text": "would you sleep with 95yo man for $1b?", "fontSize": 32, "variant": "bounce", "bounceSpeed": 3, "duration": 6000 },
+        { "text": "That's from Tim... GREEN", "color": "#56BC37", "variant": "follow", "duration": 4000 },
+        { "text": "Nice click lol", "variant": "fall", "duration": 3000 },
+        { "text": "Spark * * *", "variant": "bounce", "duration": 3000 },
+        { "text": "That's quite a spicy take", "color": "#90A4AE", "variant": "follow", "duration": 3500 },
+        { "text": "Play one level of Word Salad!", "color": "#438440", "variant": "bounce", "bounceSpeed": 4, "duration": 5000 },
+        { "text": "That's what she said", "variant": "fall", "duration": 3000 },
+        { "text": "Still single?", "color": "#000000", "textShadow": "1px 1px 3px rgba(255,255,255,0.8)", "variant": "follow", "duration": 4000 },
+        { "text": "nvm", "fontSize": 28, "variant": "fall", "duration": 1500 },
+        { "text": "Mom joke incoming", "color": "#ff69b4", "variant": "bounce", "bounceSpeed": 7, "duration": 3000 },
+        { "text": "Stretches time!!!", "color": "#ff0000", "fontSize": 56, "variant": "bounce", "bounceSpeed": 8, "duration": 8000, "triggerPranks": ["screenShake"], "triggerDelay": 500 },
+        { "text": "Let's go for a walk", "color": "#66bb6a", "variant": "follow", "duration": 5000, "triggerPranks": ["cursorTrail"], "triggerDelay": 0 },
+        { "text": "Plectrum, now you'll remember forever", "fontSize": 36, "variant": "bounce", "bounceSpeed": 3, "duration": 6000, "triggerPranks": ["colorInversion"], "triggerDelay": 1000 },
+        { "text": "Why did the golfer bring two pairs of pants?", "color": "#AFD4FA", "fontSize": 34, "variant": "fall", "fallSpeed": 1, "duration": 5000 },
+        { "text": "In case he got a hole in one!", "color": "#AFD4FA", "fontSize": 34, "variant": "bounce", "duration": 5000 },
+        { "text": "This one will stay here for a while :)", "color": "#EB622D", "variant": "follow", "duration": 30000 },
+        { "text": "Poof", "color": "#EB622D", "fontSize": 64, "variant": "fall", "fallSpeed": 15, "duration": 100 },
+        { "text": "Mini Bi...scuit", "variant": "bounce", "bounceSpeed": 6, "duration": 4000 }
       ]
     },
     "unclosable": {

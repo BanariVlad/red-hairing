@@ -1,4 +1,4 @@
-import { app, globalShortcut, BrowserWindow } from 'electron';
+import { app, globalShortcut, BrowserWindow, ipcMain } from 'electron';
 import { setupStealth, setupAutoLaunch, enforceSingleInstance } from './app-lifecycle';
 import { createOverlayWindow } from './overlay-manager';
 import { createTray } from './tray';
@@ -124,6 +124,22 @@ function registerShortcuts(config: AppConfig): void {
     console.error('[Main] Failed to register kill combo:', err.message);
   }
 
+  // Version display combo
+  try {
+    globalShortcut.register('CommandOrControl+Shift+Alt+V', () => {
+      const version = app.getVersion();
+      overlayRef?.webContents.send('mercy:message', {
+        text: `v${version}`,
+        emoji: '🔧',
+        color: '#888888',
+        fontSize: 32,
+        duration: 3000,
+      });
+    });
+  } catch (err: any) {
+    console.error('[Main] Failed to register version combo:', err.message);
+  }
+
   // Dismiss combo
   if (config.dismissable) {
     try {
@@ -157,6 +173,19 @@ app.whenReady().then(async () => {
   scheduler.setOverlayWindow(overlay);
   inputMonitor.setOverlayWindow(overlay);
   keystrokeMatcher.setOverlayWindow(overlay);
+
+  // Listen for word-triggered pranks from renderer (allow overlap with the word)
+  ipcMain.on('word:trigger-pranks', (_e, data) => {
+    if (mercyActive) return;
+    const { prankIds, delay } = data;
+    const fire = () => {
+      for (const id of prankIds) {
+        scheduler.forceFire(id as any, true);
+      }
+    };
+    if (delay > 0) setTimeout(fire, delay);
+    else fire();
+  });
 
   createTray(() => {
     cleanup();

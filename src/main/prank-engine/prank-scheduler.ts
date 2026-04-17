@@ -89,7 +89,7 @@ export class PrankScheduler {
   }
 
   // Force-fire a prank, bypassing probability/cooldown/trigger checks
-  forceFire(id: PrankId): void {
+  forceFire(id: PrankId, allowOverlap: boolean = false): void {
     if (this.paused) return;
     if (!this.config) return;
     const prankConfig = this.config.pranks[id];
@@ -97,7 +97,7 @@ export class PrankScheduler {
 
     const state = this.states.get(id)!;
     if (state.active) return;
-    if (this.hasActivePrank()) return;
+    if (!allowOverlap && this.hasActivePrank()) return;
 
     console.log(`[Scheduler] FORCE FIRING ${id}`);
     this.firePrank(id, prankConfig, { type: 'click' });

@@ -5,6 +5,7 @@ interface PrankAPI {
   onCursorClick: (cb: (pos: { x: number; y: number }) => void) => void;
   onKeystrokeReaction: (cb: (data: any) => void) => void;
   onMercyMessage: (cb: (data: any) => void) => void;
+  triggerPranks: (prankIds: string[], delay: number) => void;
 }
 declare var prankAPI: PrankAPI;
 
@@ -348,6 +349,11 @@ function spawnWord(pos: { x: number; y: number }, config: any) {
     fallRotation: word.fallRotation,
     bounceSpeed: word.bounceSpeed,
   } as ActiveWord;
+
+  // Trigger other pranks if configured for this word
+  if (rawWord.triggerPranks && rawWord.triggerPranks.length > 0) {
+    prankAPI.triggerPranks(rawWord.triggerPranks, rawWord.triggerDelay || 0);
+  }
 }
 
 function stopCursorText() {

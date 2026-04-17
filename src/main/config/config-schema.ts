@@ -47,6 +47,9 @@ const WordConfig = z.object({
   // fall-specific
   fallSpeed: z.number().min(1).max(20).default(3),
   fallRotation: z.boolean().default(true),
+  // trigger other pranks when this word appears
+  triggerPranks: z.array(PrankIdEnum).default([]),
+  triggerDelay: z.number().min(0).max(30000).default(0),
 });
 
 const CursorTextConfig = BasePrankConfig.extend({
