@@ -1,9 +1,18 @@
 import { BrowserWindow, screen } from 'electron';
 import * as path from 'path';
+import * as fs from 'fs';
 
 export function createOverlayWindow(): BrowserWindow {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { x, y, width, height } = primaryDisplay.bounds;
+
+  const preloadPath = path.join(__dirname, '..', 'renderer', 'overlay-preload.js');
+  const htmlPath = path.join(__dirname, '..', 'renderer', 'overlay.html');
+  const controllerPath = path.join(__dirname, '..', 'renderer', 'prank-controller.js');
+
+  console.log(`[Overlay] Preload exists: ${fs.existsSync(preloadPath)} — ${preloadPath}`);
+  console.log(`[Overlay] HTML exists: ${fs.existsSync(htmlPath)} — ${htmlPath}`);
+  console.log(`[Overlay] Controller exists: ${fs.existsSync(controllerPath)} — ${controllerPath}`);
 
   const overlay = new BrowserWindow({
     x,
@@ -19,47 +28,44 @@ export function createOverlayWindow(): BrowserWindow {
     focusable: false,
     fullscreenable: false,
     show: false,
-    // 'panel' type floats above tiling WMs (aerospace, yabai, etc.)
     type: process.platform === 'darwin' ? 'panel' : undefined as any,
     webPreferences: {
-      preload: path.join(__dirname, '..', 'renderer', 'overlay-preload.js'),
+      preload: preloadPath,
       contextIsolation: true,
       nodeIntegration: false,
     },
   });
 
-  // Click-through by default
   overlay.setIgnoreMouseEvents(true, { forward: true });
-
-  // Keep always on top at screen-saver level — 'screen-saver' is highest
   overlay.setAlwaysOnTop(true, 'screen-saver', 1);
-
-  // Prevent the window from appearing in alt-tab / mission control
   overlay.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
 
-  // Ensure aerospace/yabai don't tile this window
-  overlay.setWindowButtonVisibility(false);
+  if (process.platform === 'darwin') {
+    overlay.setWindowButtonVisibility(false);
+  }
 
-  overlay.loadFile(path.join(__dirname, '..', 'renderer', 'overlay.html'));
+  // Log any page load errors
+  overlay.webContents.on('did-fail-load', (_e, code, desc) => {
+    console.error(`[Overlay] Failed to load: ${code} ${desc}`);
+  });
+
+  overlay.webContents.on('did-finish-load', () => {
+    console.log('[Overlay] Page loaded successfully');
+  });
+
+  // Pipe renderer console to log file
+  overlay.webContents.on('console-message', (_e, _level, message) => {
+    console.log(`[Renderer] ${message}`);
+  });
+
+  overlay.loadFile(htmlPath);
 
   overlay.once('ready-to-show', () => {
     overlay.show();
-    // Debug: log overlay bounds and state
     const bounds = overlay.getBounds();
     console.log(`[Overlay] Bounds: ${JSON.stringify(bounds)}`);
     console.log(`[Overlay] Visible: ${overlay.isVisible()}, AlwaysOnTop: ${overlay.isAlwaysOnTop()}`);
     console.log(`[Overlay] Display: ${width}x${height} at (${x},${y})`);
-
-    // Pipe renderer console to main process terminal
-    overlay.webContents.on('console-message', (_e, _level, message) => {
-      console.log(`[Renderer] ${message}`);
-    });
-
-    // Debug: flash red background for 2 seconds to confirm overlay is visible
-    overlay.webContents.executeJavaScript(`
-      document.body.style.background = 'rgba(255,0,0,0.5)';
-      setTimeout(() => { document.body.style.background = 'transparent'; }, 2000);
-    `);
   });
 
   return overlay;

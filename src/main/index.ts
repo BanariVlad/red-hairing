@@ -1,3 +1,5 @@
+import './logger'; // must be first — patches console.log to write to file
+import { getLogPath } from './logger';
 import { app, globalShortcut, BrowserWindow } from 'electron';
 import { setupStealth, setupAutoLaunch, enforceSingleInstance } from './app-lifecycle';
 import { createOverlayWindow } from './overlay-manager';
@@ -151,6 +153,11 @@ function cleanup(): void {
 
 // ── App ready ───────────────────────────────────────────────
 app.whenReady().then(async () => {
+  console.log('[Main] Log file:', getLogPath());
+  console.log('[Main] Platform:', process.platform, 'Arch:', process.arch);
+  console.log('[Main] App version:', app.getVersion());
+  console.log('[Main] userData:', app.getPath('userData'));
+
   const overlay = createOverlayWindow();
   overlayRef = overlay;
   scheduler.setOverlayWindow(overlay);
