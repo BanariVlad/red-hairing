@@ -19,6 +19,7 @@ export class PrankScheduler {
   private overlayWindow: BrowserWindow | null = null;
   private randomTimers: Map<PrankId, NodeJS.Timeout> = new Map();
   private intervalTimers: Map<PrankId, NodeJS.Timeout> = new Map();
+  private paused: boolean = false;
 
   constructor() {
     for (const id of ALL_PRANKS) {
@@ -41,7 +42,25 @@ export class PrankScheduler {
     this.setupTimerTriggers();
   }
 
+  pause(): void {
+    this.paused = true;
+    this.stopAll();
+    this.clearAllTimers();
+    console.log('[Scheduler] Paused');
+  }
+
+  resume(): void {
+    this.paused = false;
+    if (this.config) this.setupTimerTriggers();
+    console.log('[Scheduler] Resumed');
+  }
+
+  isPaused(): boolean {
+    return this.paused;
+  }
+
   handleTrigger(event: PrankTriggerEvent): void {
+    if (this.paused) return;
     if (!this.config?.globalEnabled) return;
     if (!this.isWithinSchedule(this.config.globalSchedule)) return;
 
@@ -62,14 +81,23 @@ export class PrankScheduler {
     }
   }
 
+  private clearAllTimers(): void {
+    for (const timer of this.randomTimers.values()) clearTimeout(timer);
+    for (const timer of this.intervalTimers.values()) clearInterval(timer);
+    this.randomTimers.clear();
+    this.intervalTimers.clear();
+  }
+
   // Force-fire a prank, bypassing probability/cooldown/trigger checks
   forceFire(id: PrankId): void {
+    if (this.paused) return;
     if (!this.config) return;
     const prankConfig = this.config.pranks[id];
     if (!prankConfig) return;
 
     const state = this.states.get(id)!;
-    if (state.active) return; // don't double-fire
+    if (state.active) return;
+    if (this.hasActivePrank()) return;
 
     console.log(`[Scheduler] FORCE FIRING ${id}`);
     this.firePrank(id, prankConfig, { type: 'click' });
@@ -87,24 +115,27 @@ export class PrankScheduler {
     return false;
   }
 
+  private hasActivePrank(): boolean {
+    for (const state of this.states.values()) {
+      if (state.active) return true;
+    }
+    return false;
+  }
+
   private tryFire(id: PrankId, prankConfig: any, event: PrankTriggerEvent): void {
     const state = this.states.get(id)!;
 
     // Already active
     if (state.active) return;
 
+    // No overlapping — only one prank at a time
+    if (this.hasActivePrank()) return;
+
     // Cooldown check
     if (Date.now() < state.cooldownUntil) return;
 
     // Schedule check
     if (!this.isWithinSchedule(prankConfig.schedule)) return;
-
-    // Input-blocking exclusivity: only one at a time
-    if (INPUT_BLOCKING_PRANKS.includes(id)) {
-      for (const blockingId of INPUT_BLOCKING_PRANKS) {
-        if (this.states.get(blockingId)?.active) return;
-      }
-    }
 
     // Probability roll
     const roll = Math.random();

@@ -51,13 +51,14 @@ function tryGrantMercy(): boolean {
   // Grant mercy
   mercyUsesToday++;
   mercyActive = true;
-  scheduler.stopAll();
+  scheduler.pause(); // stops all active pranks AND clears all timers
 
   console.log(`[Mercy] Granted (${mercyUsesToday}/${mercy.maxUsesPerDay} today). Pausing for ${mercy.pauseDurationMs / 1000}s`);
 
   // Schedule resume
   mercyPauseTimer = setTimeout(() => {
     mercyActive = false;
+    scheduler.resume(); // re-enables and restarts timers
     console.log('[Mercy] Pause over. Pranks resume.');
 
     // Show "I'm back" message
