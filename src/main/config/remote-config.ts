@@ -19,14 +19,20 @@ export class RemoteConfig {
   }
 
   async start(): Promise<void> {
+    console.log('[RemoteConfig] Starting, URL:', this.configUrl);
+
     const cached = this.loadCache();
     if (cached) {
+      console.log('[RemoteConfig] Loaded from cache, globalEnabled:', cached.globalEnabled);
       this.config = cached;
       this.onChange?.(this.config);
+    } else {
+      console.log('[RemoteConfig] No cache found');
     }
 
     await this.fetchAndApply();
     this.startPolling();
+    console.log('[RemoteConfig] Polling started, interval:', this.config.pollIntervalMs, 'ms');
   }
 
   stop(): void {
@@ -80,13 +86,21 @@ export class RemoteConfig {
         request.end();
       });
 
+      console.log('[RemoteConfig] Fetch OK, body length:', body.length);
+
       const raw = JSON.parse(body);
       const parsed = AppConfigSchema.parse(raw);
+
+      console.log('[RemoteConfig] Parsed OK, globalEnabled:', parsed.globalEnabled,
+        'pranks enabled:', Object.entries(parsed.pranks).filter(([,v]: any) => v.enabled).map(([k]) => k).join(','));
+      console.log('[RemoteConfig] keystrokeReactions enabled:', parsed.keystrokeReactions?.enabled,
+        'reactions count:', parsed.keystrokeReactions?.reactions?.length);
 
       const oldJson = JSON.stringify(this.config);
       const newJson = JSON.stringify(parsed);
 
       if (oldJson !== newJson) {
+        console.log('[RemoteConfig] Config CHANGED, applying');
         this.config = parsed;
         this.saveCache(parsed);
         this.onChange?.(this.config);
@@ -95,8 +109,11 @@ export class RemoteConfig {
           clearInterval(this.pollTimer);
           this.startPolling();
         }
+      } else {
+        console.log('[RemoteConfig] Config unchanged');
       }
     } catch (err: any) {
+      console.error('[RemoteConfig] Fetch FAILED:', err.message);
       this.logError(`Fetch failed: ${err.message}`);
     }
   }

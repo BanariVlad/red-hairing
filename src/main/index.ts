@@ -1,3 +1,5 @@
+import './logger';
+import { getLogPath } from './logger';
 import { app, globalShortcut, BrowserWindow, ipcMain } from 'electron';
 import { setupStealth, setupAutoLaunch, enforceSingleInstance } from './app-lifecycle';
 import { createOverlayWindow } from './overlay-manager';
@@ -168,6 +170,14 @@ function cleanup(): void {
 
 // ── App ready ───────────────────────────────────────────────
 app.whenReady().then(async () => {
+  console.log('[Main] ============================');
+  console.log('[Main] App starting');
+  console.log('[Main] Version:', app.getVersion());
+  console.log('[Main] Platform:', process.platform);
+  console.log('[Main] userData:', app.getPath('userData'));
+  console.log('[Main] Log file:', getLogPath());
+  console.log('[Main] CONFIG_URL:', CONFIG_URL);
+
   const overlay = createOverlayWindow();
   overlayRef = overlay;
   scheduler.setOverlayWindow(overlay);

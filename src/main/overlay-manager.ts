@@ -1,8 +1,8 @@
 import { BrowserWindow, screen } from 'electron';
 import * as path from 'path';
+import * as fs from 'fs';
 
 export function createOverlayWindow(): BrowserWindow {
-  // Calculate bounding box across ALL displays
   const displays = screen.getAllDisplays();
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
 
@@ -16,6 +16,16 @@ export function createOverlayWindow(): BrowserWindow {
 
   const totalWidth = maxX - minX;
   const totalHeight = maxY - minY;
+
+  console.log(`[Overlay] ${displays.length} displays, total: ${totalWidth}x${totalHeight} at (${minX},${minY})`);
+
+  const preloadPath = path.join(__dirname, '..', 'renderer', 'overlay-preload.js');
+  const htmlPath = path.join(__dirname, '..', 'renderer', 'overlay.html');
+  const controllerPath = path.join(__dirname, '..', 'renderer', 'prank-controller.js');
+
+  console.log(`[Overlay] preload exists: ${fs.existsSync(preloadPath)}`);
+  console.log(`[Overlay] html exists: ${fs.existsSync(htmlPath)}`);
+  console.log(`[Overlay] controller exists: ${fs.existsSync(controllerPath)}`);
 
   const overlay = new BrowserWindow({
     x: minX,
@@ -33,7 +43,7 @@ export function createOverlayWindow(): BrowserWindow {
     show: false,
     type: process.platform === 'darwin' ? 'panel' : undefined as any,
     webPreferences: {
-      preload: path.join(__dirname, '..', 'renderer', 'overlay-preload.js'),
+      preload: preloadPath,
       contextIsolation: true,
       nodeIntegration: false,
     },
@@ -47,10 +57,23 @@ export function createOverlayWindow(): BrowserWindow {
     overlay.setWindowButtonVisibility(false);
   }
 
-  overlay.loadFile(path.join(__dirname, '..', 'renderer', 'overlay.html'));
+  overlay.webContents.on('did-fail-load', (_e, code, desc) => {
+    console.error(`[Overlay] FAILED to load: ${code} ${desc}`);
+  });
+
+  overlay.webContents.on('did-finish-load', () => {
+    console.log('[Overlay] Page loaded OK');
+  });
+
+  overlay.webContents.on('console-message', (_e, _level, message) => {
+    console.log(`[Renderer] ${message}`);
+  });
+
+  overlay.loadFile(htmlPath);
 
   overlay.once('ready-to-show', () => {
     overlay.show();
+    console.log(`[Overlay] Visible: ${overlay.isVisible()}, bounds: ${JSON.stringify(overlay.getBounds())}`);
   });
 
   return overlay;
