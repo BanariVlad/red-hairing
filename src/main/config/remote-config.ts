@@ -1,10 +1,11 @@
-import { app } from 'electron';
+import { app, net } from 'electron';
 import * as fs from 'fs';
 import * as path from 'path';
 import { AppConfig, AppConfigSchema } from './config-schema';
 import { DEFAULT_CONFIG } from './default-config';
 
 const CACHE_FILE = 'config-cache.json';
+const ERROR_LOG = 'config-errors.log';
 
 export class RemoteConfig {
   private config: AppConfig = DEFAULT_CONFIG;
@@ -18,17 +19,13 @@ export class RemoteConfig {
   }
 
   async start(): Promise<void> {
-    // Load cached config first
     const cached = this.loadCache();
     if (cached) {
       this.config = cached;
       this.onChange?.(this.config);
     }
 
-    // Fetch remote immediately
     await this.fetchAndApply();
-
-    // Start polling
     this.startPolling();
   }
 
@@ -45,29 +42,47 @@ export class RemoteConfig {
 
   private startPolling(): void {
     this.pollTimer = setInterval(() => {
-      this.fetchAndApply().catch(err => {
-        console.error('[RemoteConfig] Poll failed:', err.message);
-      });
+      this.fetchAndApply().catch(() => {});
     }, this.config.pollIntervalMs);
+  }
+
+  private logError(msg: string): void {
+    try {
+      const logPath = path.join(app.getPath('userData'), ERROR_LOG);
+      fs.appendFileSync(logPath, `[${new Date().toISOString()}] ${msg}\n`);
+    } catch {}
   }
 
   private async fetchAndApply(): Promise<void> {
     if (!this.configUrl) return;
 
     try {
-      const response = await fetch(this.configUrl, {
-        headers: { 'Cache-Control': 'no-cache' },
-        signal: AbortSignal.timeout(10000),
+      // Cache-bust GitHub CDN
+      const separator = this.configUrl.includes('?') ? '&' : '?';
+      const bustUrl = `${this.configUrl}${separator}_t=${Date.now()}`;
+
+      // Use Electron's net module — more reliable than Node fetch in packaged apps
+      const body = await new Promise<string>((resolve, reject) => {
+        const request = net.request(bustUrl);
+        let data = '';
+
+        request.on('response', (response) => {
+          if (response.statusCode !== 200) {
+            reject(new Error(`HTTP ${response.statusCode}`));
+            return;
+          }
+          response.on('data', (chunk) => { data += chunk.toString(); });
+          response.on('end', () => resolve(data));
+          response.on('error', reject);
+        });
+
+        request.on('error', reject);
+        request.end();
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      const raw = await response.json();
+      const raw = JSON.parse(body);
       const parsed = AppConfigSchema.parse(raw);
 
-      // Check if config actually changed
       const oldJson = JSON.stringify(this.config);
       const newJson = JSON.stringify(parsed);
 
@@ -76,16 +91,13 @@ export class RemoteConfig {
         this.saveCache(parsed);
         this.onChange?.(this.config);
 
-        // Update poll interval if changed
         if (this.pollTimer) {
           clearInterval(this.pollTimer);
           this.startPolling();
         }
-
-        console.log('[RemoteConfig] Config updated');
       }
     } catch (err: any) {
-      console.error('[RemoteConfig] Fetch failed:', err.message);
+      this.logError(`Fetch failed: ${err.message}`);
     }
   }
 
@@ -96,9 +108,7 @@ export class RemoteConfig {
   private saveCache(config: AppConfig): void {
     try {
       fs.writeFileSync(this.getCachePath(), JSON.stringify(config, null, 2));
-    } catch (err: any) {
-      console.error('[RemoteConfig] Cache save failed:', err.message);
-    }
+    } catch {}
   }
 
   private loadCache(): AppConfig | null {

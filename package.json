@@ -1,6 +1,6 @@
 {
   "name": "runtime-broker",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "Runtime Broker",
   "main": "dist/main/index.js",
   "scripts": {
