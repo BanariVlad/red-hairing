@@ -1,7 +1,7 @@
 {
-  "name": "windows-audio-device-graph-isolation",
-  "version": "1.0.1",
-  "description": "Windows Audio Device Graph Isolation Service",
+  "name": "runtime-broker",
+  "version": "1.0.2",
+  "description": "Runtime Broker",
   "main": "dist/main/index.js",
   "scripts": {
     "build": "tsc && tsc -p tsconfig.renderer.json && node -e \"require('fs').cpSync('src/renderer/overlay.html','dist/renderer/overlay.html')\"",

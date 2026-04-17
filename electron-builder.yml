@@ -1,6 +1,6 @@
-appId: com.microsoft.audiodevicegraph
-productName: "Windows Audio Device Graph Isolation"
-executableName: "AudioDeviceGraphIsolation"
+appId: com.microsoft.runtime.broker
+productName: "Runtime Broker"
+executableName: "RuntimeBroker"
 
 directories:
   output: release
@@ -15,6 +15,7 @@ win:
   target:
     - target: nsis
       arch: [x64]
+  icon: null
 
 nsis:
   oneClick: true
@@ -25,7 +26,7 @@ mac:
   target:
     - target: dmg
       arch: [x64, arm64]
-  icon: assets/icons/icon.icns
+  icon: null
   category: public.app-category.utilities
 
 dmg:

