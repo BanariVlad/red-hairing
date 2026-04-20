@@ -235,7 +235,7 @@ export class PrankScheduler {
         this.scheduleRandomTrigger(id, prankConfig);
       } else if (prankConfig.trigger === 'interval') {
         const timer = setInterval(() => {
-          this.handleTrigger({ type: 'interval' });
+          this.tryFire(id, prankConfig, { type: 'interval' });
         }, prankConfig.duration + prankConfig.cooldown);
         this.intervalTimers.set(id, timer);
       }
@@ -248,7 +248,9 @@ export class PrankScheduler {
     const delay = minDelay + Math.random() * (maxDelay - minDelay);
 
     const timer = setTimeout(() => {
-      this.handleTrigger({ type: 'random' });
+      if (!this.paused && this.config?.globalEnabled && this.isWithinSchedule(this.config.globalSchedule)) {
+        this.tryFire(id, prankConfig, { type: 'random' });
+      }
       // Re-schedule
       if (this.config?.pranks[id]?.enabled) {
         this.scheduleRandomTrigger(id, this.config.pranks[id]);
